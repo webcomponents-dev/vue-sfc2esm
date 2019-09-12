@@ -1,6 +1,6 @@
 {
   "name": "@webcomponents-dev/vue-sfc2esm",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Transpile Vue Single File Components to ES Modules - ready to be loaded by Vue",
   "main": "dist/index.esm.js",
   "types": "dist/index.d.ts",
