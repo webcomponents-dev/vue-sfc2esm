@@ -1,8 +1,8 @@
 {
-  "name": "vue-sfc2esm",
+  "name": "@webcomponents-dev/vue-sfc2esm",
   "version": "1.0.0",
   "description": "Transpile Vue Single File Components to ES Modules - ready to be loaded by Vue",
-  "main": "index.js",
+  "main": "dist/index.esm.js",
   "scripts": {
     "build": "rollup -c rollup.config.lib.js",
     "build:test": "rollup -c rollup.config.test.js",
@@ -14,6 +14,7 @@
   },
   "keywords": [
     "vue",
+    "sfc",
     "webcomponents.dev"
   ],
   "author": "Georges Gomes",
