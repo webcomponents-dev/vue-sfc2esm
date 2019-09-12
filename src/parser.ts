@@ -2,15 +2,18 @@ const domParser = new DOMParser();
 
 interface ParserResult {
   template?: string;
-  script?: { lang: string, source: string }
-  styles?: string[];
+  script: { lang: string, source?: string }
+  styles: string[];
+  styles_scoped: string[];
 }
 
 function parse(sfc: string) : ParserResult {
+  
   var result: ParserResult = { 
     template: undefined,
     script: { lang: 'javascript', source: undefined },
-    styles: []
+    styles: [],
+    styles_scoped: []
   };
 
   var doc = domParser.parseFromString(sfc, "text/html");
@@ -46,7 +49,14 @@ function parse(sfc: string) : ParserResult {
   let styles = doc.getElementsByTagName("style");
   if (styles && styles.length > 0) {
     for(let i=0; i<styles.length; i++) {
-      result.styles.push(styles[i].innerHTML.trim());
+      const s = styles[i];
+      const css = s.innerHTML.trim();
+      if (s.hasAttribute('scoped')) {
+        result.styles_scoped.push(css);
+      }
+      else {
+        result.styles.push(css);
+      }
     }
   }
 

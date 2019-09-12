@@ -1,13 +1,7 @@
 import parse from "./parser";
-import { injectTemplateToJavaScript } from "./templateInjectors";
+import { injectToJavaScript } from "./injector";
 
-interface SFC2ESM_Result {
-  script : string;
-  style_scoped ?: string; 
-  style ?: string;
-}
-
-function sfc2esm(sfc: string) : SFC2ESM_Result {
+function sfc2esm(sfc: string) : string {
 
   const parts = parse(sfc);
 
@@ -16,9 +10,10 @@ function sfc2esm(sfc: string) : SFC2ESM_Result {
     throw new Error("Only Javascript is currently supported");
   }
 
-  const esm = injectTemplateToJavaScript(parts.template, parts.script.source);
+  let esm = parts.script.source || 'export default {}';
+  esm = injectToJavaScript(parts.template || '', parts.styles, parts.styles_scoped, esm);
 
-  return { script: esm };
+  return esm;
 }
 
 export { sfc2esm };
