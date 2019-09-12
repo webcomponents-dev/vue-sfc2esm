@@ -19,7 +19,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped titi=3>
 .hello {
   text-align: center;
   color: #900;
