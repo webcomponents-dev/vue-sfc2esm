@@ -1,5 +1,5 @@
 import parse from "./parser";
-import { injectToJavaScript } from "./injector";
+import { injectToJavaScript, injectStylesToJavaScript } from "./injector";
 
 function sfc2esm(sfc: string) : string {
 
@@ -11,7 +11,10 @@ function sfc2esm(sfc: string) : string {
   }
 
   let esm = parts.script.source || 'export default {}';
-  esm = injectToJavaScript(parts.template || '', parts.styles, parts.styles_scoped, esm);
+  esm = injectToJavaScript(parts.template || '', esm);
+
+  esm = injectStylesToJavaScript("__sfc2esm__styles", parts.styles, esm);
+  esm = injectStylesToJavaScript("__sfc2esm__styles_scoped", parts.styles_scoped, esm);
 
   return esm;
 }

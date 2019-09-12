@@ -32,29 +32,9 @@ function concatStyles( array: string[] ) : string {
   return array.reduce((r, css) => (r = r.concat('\n', css)));  
 }
 
-function buildProps(template: string, styles: string[], styles_scoped: string[]) {
-  let props: string[] = [];
+function injectToJSON(object: any, template: string, ms: MagicString) {
 
-  // Add template
-  props.push(`template: "${escape(template)}"`);
-
-  // Add global styles
-  if (styles.length>0)
-  {
-    props.push(`"__sfc2esm__style": "${escape(concatStyles(styles))}"`);
-  }
-
-  // Add scoped styles
-  if (styles_scoped.length > 0) {
-    props.push(`"__sfc2esm__style_scoped": "${escape(concatStyles(styles_scoped))}"`);
-  }
-
-  return props.join(',\n');
-}
-
-function injectToJSON(object: any, template: string, styles: string[], styles_scoped: string[], ms: MagicString) {
-
-  const propsString = buildProps(template, styles, styles_scoped);
+  const propsString = `template: "${escape(template)}"`;
 
   if (object.properties && object.properties.length > 0) {
     // If there is properties
@@ -70,8 +50,6 @@ function injectToJSON(object: any, template: string, styles: string[], styles_sc
 
 function injectToJavaScript(
   template: string,
-  styles: string[],
-  styles_scoped: string[],
   source: string
 ): string {
   // Let's parse the source code
@@ -88,13 +66,13 @@ function injectToJavaScript(
         node.declaration.type === "ObjectExpression"
       ) {
         const object = node.declaration;
-        injectToJSON(object, template, styles, styles_scoped, ms);
+        injectToJSON(object, template, ms);
         injected++;
       }
       // export const myComponent = { ... }
       else if (node.type === "ExportNamedDeclaration") {
         const object = node.declaration.declarations[0].init;
-        injectToJSON(object, template, styles, styles_scoped, ms);
+        injectToJSON(object, template, ms);
         injected++;
         const variable_start = node.declaration.start;
         const variable_end = object.start;
@@ -112,4 +90,8 @@ function injectToJavaScript(
   return ms.toString();
 }
 
-export { injectToJavaScript };
+function injectStylesToJavaScript(exportName: string, styles: string[], script: string) {
+  return `${script}\n export const ${exportName} = "${escape(concatStyles(styles))}"`;
+}
+
+export { injectToJavaScript, injectStylesToJavaScript };

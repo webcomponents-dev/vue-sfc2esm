@@ -1,35 +1,8 @@
-import {sfc2esm} from '../src/index.ts';
+import "./sfc.test.js";
 
-const basicSFC = `
-<template>
-	<div class="hello">
-		<h1>Colored Text</h1>
-		<button>{{ msg }}</button>
-  </div>
-</template>
+//import "./console.test.js";
 
-<script>
-export default {
-  data() {
-    return {
-      msg: "Push Me"
-    };
-  }
-};
-</script>
+mocha.checkLeaks();
+mocha.run();
 
-<style scoped>
-.hello {
-  text-align: center;
-  color: #900;
-}
-</style>
-<style>
-.global {
-  color: red;
-}
-</style>`;
 
-const result = sfc2esm(basicSFC);
-
-console.log(result);

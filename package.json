@@ -30,19 +30,19 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
     "@babel/preset-env": "^7.4.1",
     "@babel/preset-typescript": "^7.3.3",
+    "acorn": "^7.0.0",
     "chai": "^4.2.0",
     "concurrently": "^4.1.2",
+    "estree-walker": "^0.6.1",
     "live-server": "^1.2.1",
     "mocha": "^6.2.0",
+    "rollup": "^1.21.2",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-multi-entry": "^2.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript2": "^0.24.1",
+    "sinon": "^7.4.2",
     "typescript": "^3.3.3"
   },
-  "dependencies": {
-    "acorn": "^7.0.0",
-    "estree-walker": "^0.6.1",
-    "rollup": "^1.21.2"
-  }
+  "dependencies": {}
 }
