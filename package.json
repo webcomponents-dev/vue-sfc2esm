@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc --emitDeclarationOnly && rollup -c rollup.config.lib.js",
     "build:test": "rollup -c rollup.config.test.js",
-    "test:watch": "concurrently 'rollup -c rollup.config.test.js -w' 'live-server --port=9000 --open=test/index.html'"
+    "test:watch": "concurrently 'rollup -c rollup.config.test.js -w' 'live-server --port=9000 --open=test/index.html'",
+    "pub": "rimraf dist && npm run build && npm publish"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,7 @@
     "typescript": "^3.3.3"
   },
   "dependencies": {
-    "node-html-parser": "^1.1.16"
+    "node-html-parser": "^1.1.16",
+    "rimraf": "^3.0.0"
   }
 }
