@@ -2,13 +2,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./dist/",
+    "declaration": true,
     "noImplicitAny": true,
     "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "strict": true,
     "target": "es6",
-    "allowJs": true,
     "experimentalDecorators": true,
     "lib": [
       "es2018",

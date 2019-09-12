@@ -1,10 +1,11 @@
 {
   "name": "@webcomponents-dev/vue-sfc2esm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Transpile Vue Single File Components to ES Modules - ready to be loaded by Vue",
   "main": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rollup -c rollup.config.lib.js",
+    "build": "tsc --emitDeclarationOnly && rollup -c rollup.config.lib.js",
     "build:test": "rollup -c rollup.config.test.js",
     "test:watch": "concurrently 'rollup -c rollup.config.test.js -w' 'live-server --port=9000 --open=test/index.html'"
   },
