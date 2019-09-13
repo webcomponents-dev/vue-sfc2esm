@@ -1,15 +1,22 @@
 import parse from "./parser";
-import { injectToJavaScript, injectStylesToJavaScript } from "./injector";
+import {
+  injectTemplateToJavaScript,
+  injectStylesToJavaScript
+} from "./injector";
 
-function sfc2esm(sfc: string): string {
+type Compilers = (lang: string, code: string) => Promise<string>;
+
+async function sfc2esm(sfc: string, compilers?: Compilers ): Promise<string> {
   const parts = parse(sfc);
 
-  if (parts.script.lang !== "javascript") {
-    throw new Error("Only Javascript is currently supported");
+  const code = parts.script.source;
+  var esm = "export default {}";
+
+  if (compilers && code && code.length>0) {
+      esm = await compilers(parts.script.lang, code);
   }
 
-  let esm = parts.script.source || "export default {}";
-  esm = injectToJavaScript(parts.template || "", esm);
+  esm = injectTemplateToJavaScript(parts.template || "", esm);
 
   if (parts.styles.length > 0) {
     esm = injectStylesToJavaScript("__sfc2esm__styles", parts.styles, esm);

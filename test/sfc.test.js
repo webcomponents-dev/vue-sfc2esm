@@ -32,8 +32,8 @@ export default {
 </style>`;
 
 describe("Full SFC Javascript", function() {
-  it("should return a valid ESM", function() {
-    const esm = sfc2esm(fullSFC);
+  it("should return a valid ESM", async function() {
+    const esm = await sfc2esm(fullSFC);
 
     // Check valid module
     Parser.parse(esm, { sourceType: "module" });

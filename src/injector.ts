@@ -48,10 +48,7 @@ function injectToJSON(object: any, template: string, ms: MagicString) {
   }
 }
 
-function injectToJavaScript(
-  template: string,
-  source: string
-): string {
+function injectTemplateToJavaScript(template: string, source: string): string {
   // Let's parse the source code
   const ast = Parser.parse(source, { sourceType: "module" });
   const ms = new MagicString(source);
@@ -94,4 +91,4 @@ function injectStylesToJavaScript(exportName: string, styles: string[], script: 
   return `${script}\n export const ${exportName} = "${escape(concatStyles(styles))}"`;
 }
 
-export { injectToJavaScript, injectStylesToJavaScript };
+export { injectTemplateToJavaScript, injectStylesToJavaScript };

@@ -11,7 +11,7 @@ function parse(sfc: string) : ParserResult {
   
   var result: ParserResult = { 
     template: undefined,
-    script: { lang: 'javascript', source: undefined },
+    script: { lang: 'js', source: undefined },
     styles: [],
     styles_scoped: []
   };
@@ -34,7 +34,6 @@ function parse(sfc: string) : ParserResult {
 
   // Get script
   let scripts = doc.querySelectorAll("script");
-  console.log(scripts);
   if (scripts && scripts.length > 0) {
     
     if (scripts.length > 1) {
@@ -65,8 +64,6 @@ function parse(sfc: string) : ParserResult {
       }
     }
   }
-
-  console.log(result);
 
   return result;
 }
