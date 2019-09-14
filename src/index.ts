@@ -1,27 +1,53 @@
 import parse from "./parser";
 import {
   injectTemplateToJavaScript,
+  injectTemplateToTypeScript,
   injectStylesToJavaScript
 } from "./injector";
 
-type Compilers = (lang: string, code: string) => Promise<string>;
+export type Compilers = (lang: string, code: string) => Promise<string>;
 
 async function sfc2esm(sfc: string, compilers?: Compilers ): Promise<string> {
   const parts = parse(sfc);
 
-  const code = parts.script.source;
+  const code_lang = parts.script.lang;
+  let code = parts.script.source;
+
+  if (code_lang!=='js' && !compilers)
+  {
+    throw new Error(`You need to provide compilers to support lang=${code_lang}`);
+  } 
+
+  // Inject template pre-compilation
+  //
+  if (code_lang==='ts')
+  {
+    code = injectTemplateToTypeScript(parts.template || "", code);
+  }
+
+  // Compilation
+  //
   var esm = "export default {}";
 
   if (compilers && code && code.length>0) {
-      esm = await compilers(parts.script.lang, code);
+      esm = await compilers(code_lang, code);
   }
 
-  esm = injectTemplateToJavaScript(parts.template || "", esm);
+  // Inject template post-compilation
+  //
+  if (code_lang!=='ts')
+  {
+    esm = injectTemplateToJavaScript(parts.template || "", esm);
+  }
 
+  // <style>
+  //
   if (parts.styles.length > 0) {
     esm = injectStylesToJavaScript("__sfc2esm__styles", parts.styles, esm);
   }
 
+  // <styled scoped>
+  //
   if (parts.styles_scoped.length > 0) {
     esm = injectStylesToJavaScript(
       "__sfc2esm__styles_scoped",

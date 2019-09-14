@@ -48,6 +48,27 @@ function injectToJSON(object: any, template: string, ms: MagicString) {
   }
 }
 
+function injectTemplateToTypeScript(template: string, source?: string): string {
+
+  if (!source || source.length==0) {
+    return `export default { template: "${escape(template)}" }`;
+  }
+
+  const match = /@Component[ \t\n\r]*\([ \t\n\r]*\{/g.exec(source);
+
+  if (!match) {
+    throw new Error("Couldn't find a Component Class");
+  }
+
+  if (match.length>1)
+  {
+    throw new Error("Found multiple Components Classes");
+  }
+  
+  return source.replace(match[0], 
+    `${match[0]} template: "${escape(template)}", `);
+}
+
 function injectTemplateToJavaScript(template: string, source: string): string {
   // Let's parse the source code
   const ast = Parser.parse(source, { sourceType: "module" });
@@ -91,4 +112,6 @@ function injectStylesToJavaScript(exportName: string, styles: string[], script: 
   return `${script}\n export const ${exportName} = "${escape(concatStyles(styles))}"`;
 }
 
-export { injectTemplateToJavaScript, injectStylesToJavaScript };
+export {
+  injectTemplateToJavaScript, injectTemplateToTypeScript, injectStylesToJavaScript
+};
