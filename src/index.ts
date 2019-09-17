@@ -1,4 +1,5 @@
-import parse from "./parser";
+import parse from "@webcomponents-dev/sfc-parser";
+
 import {
   injectTemplateToJavaScript,
   injectTemplateToTypeScript,
@@ -10,48 +11,75 @@ export type Compilers = (lang: string, code: string) => Promise<string>;
 async function sfc2esm(sfc: string, compilers?: Compilers ): Promise<string> {
   const parts = parse(sfc);
 
-  const code_lang = parts.script.lang;
-  let code = parts.script.source;
+  let code;
+  let code_lang;
 
-  if (code_lang!=='js' && !compilers)
+  // Check <script>
+  //
+  if (parts.scripts.length > 1) {
+    throw new Error("Only one <script> tag is supported");
+  }
+  if (parts.scripts.length == 0) {
+    // Do nothing
+  }
+  else {
+    code_lang = parts.scripts[0].attributes.lang || 'js';
+    code = parts.scripts[0].content;
+  }
+
+  // Check <template>
+  //
+  if (parts.templates.length > 1) {
+    throw new Error("Only one <template> tag is supported");
+  }
+
+  if (code && code_lang!=='js' && !compilers)
   {
     throw new Error(`You need to provide compilers to support lang=${code_lang}`);
   } 
 
   // Inject template pre-compilation
   //
-  if (code_lang==='ts')
+  let templateNotInjected = true;
+  if (code && code_lang==='ts' && parts.templates.length>0)
   {
-    code = injectTemplateToTypeScript(parts.template || "", code);
+    code = injectTemplateToTypeScript(parts.templates[0].content || "", code);
+    templateNotInjected = false;
   }
+
+  var esm = "export default {}";
 
   // Compilation
   //
-  var esm = "export default {}";
-
   if (compilers && code && code.length>0) {
       esm = await compilers(code_lang, code);
   }
 
   // Inject template post-compilation
   //
-  if (code_lang!=='ts')
-  {
-    esm = injectTemplateToJavaScript(parts.template || "", esm);
+  if (templateNotInjected && parts.templates.length>0) {
+    esm = injectTemplateToJavaScript(parts.templates[0].content || "", esm);
   }
+
+  const styles = parts.styles
+    .filter(p => p.attributes.scoped===undefined)
+    .map(p => p.content);
+  const styles_scoped = parts.styles
+    .filter(p => p.attributes.scoped!==undefined)
+    .map(p => p.content);
 
   // <style>
   //
-  if (parts.styles.length > 0) {
-    esm = injectStylesToJavaScript("__sfc2esm__styles", parts.styles, esm);
+  if (styles.length > 0) {
+    esm = injectStylesToJavaScript("__sfc2esm__styles", styles, esm);
   }
 
   // <styled scoped>
   //
-  if (parts.styles_scoped.length > 0) {
+  if (styles_scoped.length > 0) {
     esm = injectStylesToJavaScript(
       "__sfc2esm__styles_scoped",
-      parts.styles_scoped,
+      styles_scoped,
       esm
     );
   }

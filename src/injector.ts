@@ -29,7 +29,7 @@ function escape(s: string) : string {
 }
 
 function concatStyles( array: string[] ) : string {
-  return array.reduce((r, css) => (r = r.concat('\n', css)));  
+  return array.join('\n');
 }
 
 function injectToJSON(object: any, template: string, ms: MagicString) {

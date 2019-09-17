@@ -1,5 +1,35 @@
 import { sfc2esm } from "../src/index.ts";
 
+const jsSFC = `
+<template>
+	<div class="hello">
+		<h1>Colored Text</h1>
+		<button>{{ msg }}</button>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      msg: "Push Me"
+    };
+  }
+};
+</script>
+
+<style scoped>
+.hello {
+  text-align: center;
+  color: #900;
+}
+</style>
+<style>
+.global {
+  color: red;
+}
+</style>`;
+
 const tsSFC = `
 <template>
 	<button class="btn">
@@ -32,4 +62,4 @@ export default class logo extends Vue {
 	}
 </style>`;
 
-console.log(sfc2esm(tsSFC));
+console.log(sfc2esm(jsSFC));
